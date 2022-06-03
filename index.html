@@ -4,14 +4,22 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>MZY & SGX</title>
     <style>
       html,
       body {
-        height: 100%;
-        width: 100%;
-        background: #122139;
+        margin: 0;
         overflow: hidden;
+      }
+
+      img {
+        width: 8vw;
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        margin: auto;
       }
 
       .container {
@@ -234,7 +242,7 @@
 
       .container .rose-leaves > div:nth-child(1) {
         width: 6px;
-        height: 230px;
+        height: 200px;
         border: none;
         top: 80px;
         background: #066406;
@@ -643,7 +651,7 @@
         display: block;
         position: absolute;
         color: white;
-        top: 80;
+        top: 10;
         bottom: 0;
         left: 0;
         right: 0;
@@ -655,10 +663,84 @@
         top: -0.14em;
         left: 10px;
       }
+
+      #button {
+        width: 100px;
+        height: 100px;
+        left: 50%;
+        top: 50%;
+        margin: -50px;
+        background: #96326e;
+        position: fixed;
+        border-radius: 50px;
+        box-sizing: border-box;
+        color: black;
+        text-align: center;
+        padding: 25px 0 0 3px;
+        font-family: monospace;
+        font-size: 40px;
+        cursor: pointer;
+        z-index: 20;
+        box-shadow: 0 0 20px -5px #22181e;
+        overflow: hidden;
+      }
+      #button img {
+        position: absolute;
+        left: -73%;
+        top: 0;
+        width: 180%;
+      }
+      #button svg {
+        width: 50%;
+        height: 50%;
+        left: 50%;
+        top: 50%;
+        position: absolute;
+        transform: translateX(-50%) translateY(-45%);
+      }
+      .heart {
+        position: fixed;
+        width: 50px;
+        z-index: 10;
+        height: 50px;
+        transform: translateX(-50%) translateY(-50%) scale(1.5);
+        opacity: 1;
+        transition: 0.5s ease;
+        opacity: 0;
+      }
     </style>
   </head>
   <body>
-    <div class="container">
+    <div id="container"></div>
+
+    <div id="button" onclick="goToTimeLine()">
+      <!--<img src="https://pp.vk.me/c624230/v624230976/43e7b/T5WjDtwt80M.jpg" alt="" />--><svg
+        version="1.1"
+        id="Capa_1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        x="0px"
+        y="0px"
+        width="45.412px"
+        height="45.413px"
+        viewBox="0 0 45.412 45.413"
+        style="enable-background: new 0 0 45.412 45.413"
+        xml:space="preserve"
+      >
+        <g>
+          <path
+            style="fill: #ffdcb9"
+            d="M45.412,16.024c0-6.918-5.668-12.547-12.635-12.547c-4.103,0-7.754,1.951-10.063,4.969
+              c-2.311-3.018-5.965-4.969-10.07-4.969C5.672,3.477,0,9.105,0,16.024c0,10.422,14.892,25.911,22.715,25.911
+              c1.185,0,2.531-0.358,3.965-0.998c0,0-5.476-4.086-7.683-5.672C13.625,31.402,5.143,22.639,5.143,16.024
+              c0-4.082,3.365-7.403,7.5-7.403c4.135,0,7.5,3.321,7.5,7.403c0,1.42,1.151,2.572,2.572,2.572c1.42,0,2.57-1.152,2.57-2.572
+              c0-4.082,3.361-7.403,7.492-7.403s7.492,3.321,7.492,7.403c0,6.723-8.544,15.977-14.113,19.411l4.394,3.244
+              C37.761,33.575,45.412,23.497,45.412,16.024z"
+          />
+        </g>
+      </svg>
+    </div>
+    <!-- <div class="container">
       <div class="glass"></div>
       <div class="thorns">
         <div></div>
@@ -692,20 +774,226 @@
         <div></div>
         <div></div>
       </div>
-    </div>
+    </div> -->
 
     <div class="console-container">
       <span id="text"></span>
       <div class="console-underscore" id="console">&#95;</div>
     </div>
 
+    <script
+      src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1037366/three.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1037366/CanvasRenderer.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1037366/Projector.js"
+      crossorigin="anonymous"
+    ></script>
     <script>
-      // function([string1, string2],target id,[color1,color2])
-      consoleText(["Hello Sandra", "This is for you", "Made with Love", "Si SG"], "text", [
-        "tomato",
-        "rebeccapurple",
-        "lightblue",
-      ]);
+      var camera, scene, renderer;
+
+      var texture_placeholder,
+        isUserInteracting = false,
+        onMouseDownMouseX = 0,
+        onMouseDownMouseY = 0,
+        lon = 90,
+        onMouseDownLon = 0,
+        lat = 0,
+        onMouseDownLat = 0,
+        phi = 0,
+        theta = 0,
+        target = new THREE.Vector3();
+
+      init();
+      animate();
+
+      function init() {
+        var container, mesh;
+
+        container = document.getElementById("container");
+
+        camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          1,
+          1100
+        );
+
+        scene = new THREE.Scene();
+
+        texture_placeholder = document.createElement("canvas");
+        texture_placeholder.width = 128;
+        texture_placeholder.height = 128;
+
+        var context = texture_placeholder.getContext("2d");
+        context.fillStyle = "rgb( 200, 200, 200 )";
+        context.fillRect(
+          0,
+          0,
+          texture_placeholder.width,
+          texture_placeholder.height
+        );
+
+        var materials = [
+          loadTexture(
+            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1037366/space4.jpg"
+          ), // right
+          loadTexture(
+            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1037366/space2.jpg"
+          ), // left
+          loadTexture(
+            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1037366/space1.jpg"
+          ), // top
+          loadTexture(
+            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1037366/space6.jpg"
+          ), // bottom
+          loadTexture(
+            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1037366/space3.jpg"
+          ), // back
+          loadTexture(
+            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1037366/space5.jpg"
+          ), // front
+        ];
+
+        mesh = new THREE.Mesh(
+          new THREE.BoxGeometry(300, 300, 300, 7, 7, 7),
+          new THREE.MultiMaterial(materials)
+        );
+        mesh.scale.x = -1;
+        scene.add(mesh);
+
+        for (var i = 0, l = mesh.geometry.vertices.length; i < l; i++) {
+          var vertex = mesh.geometry.vertices[i];
+
+          vertex.normalize();
+          vertex.multiplyScalar(550);
+        }
+
+        renderer = new THREE.CanvasRenderer();
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        document.addEventListener("mousedown", onDocumentMouseDown, false);
+        document.addEventListener("mousemove", onDocumentMouseMove, false);
+        document.addEventListener("mouseup", onDocumentMouseUp, false);
+        //document.addEventListener( 'wheel', onDocumentMouseWheel, false );
+
+        document.addEventListener("touchstart", onDocumentTouchStart, false);
+        document.addEventListener("touchmove", onDocumentTouchMove, false);
+
+        //
+
+        window.addEventListener("resize", onWindowResize, false);
+      }
+
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      function loadTexture(path) {
+        var texture = new THREE.Texture(texture_placeholder);
+        var material = new THREE.MeshBasicMaterial({
+          map: texture,
+          overdraw: 0.5,
+        });
+
+        var image = new Image();
+        image.onload = function () {
+          texture.image = this;
+          texture.needsUpdate = true;
+        };
+        image.src = path;
+
+        return material;
+      }
+
+      function onDocumentMouseDown(event) {
+        event.preventDefault();
+
+        isUserInteracting = true;
+
+        onPointerDownPointerX = event.clientX;
+        onPointerDownPointerY = event.clientY;
+
+        onPointerDownLon = lon;
+        onPointerDownLat = lat;
+      }
+
+      function onDocumentMouseMove(event) {
+        if (isUserInteracting === true) {
+          lon =
+            (onPointerDownPointerX - event.clientX) * 0.1 + onPointerDownLon;
+          lat =
+            (event.clientY - onPointerDownPointerY) * 0.1 + onPointerDownLat;
+        }
+      }
+
+      function onDocumentMouseUp(event) {
+        isUserInteracting = false;
+      }
+
+      function onDocumentTouchStart(event) {
+        if (event.touches.length == 1) {
+          event.preventDefault();
+
+          onPointerDownPointerX = event.touches[0].pageX;
+          onPointerDownPointerY = event.touches[0].pageY;
+
+          onPointerDownLon = lon;
+          onPointerDownLat = lat;
+        }
+      }
+
+      function onDocumentTouchMove(event) {
+        if (event.touches.length == 1) {
+          event.preventDefault();
+
+          lon =
+            (onPointerDownPointerX - event.touches[0].pageX) * 0.1 +
+            onPointerDownLon;
+          lat =
+            (event.touches[0].pageY - onPointerDownPointerY) * 0.1 +
+            onPointerDownLat;
+        }
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        update();
+      }
+
+      function update() {
+        if (isUserInteracting === false) {
+          lon += 0.1;
+        }
+
+        lat = Math.max(-85, Math.min(85, lat));
+        phi = THREE.Math.degToRad(90 - lat);
+        theta = THREE.Math.degToRad(lon);
+
+        target.x = 500 * Math.sin(phi) * Math.cos(theta);
+        target.y = 500 * Math.cos(phi);
+        target.z = 500 * Math.sin(phi) * Math.sin(theta);
+
+        camera.position.copy(target).negate();
+        camera.lookAt(target);
+
+        renderer.render(scene, camera);
+      }
+
+      consoleText(
+        ["Dear Miao,", "At the center of the Universe", "Is my love for you", "—— Si SG"],
+        "text",
+        ["lightblue", "#96326e", "#96326e", "lightblue"]
+      );
 
       function consoleText(words, id, colors) {
         if (colors === undefined) colors = ["#fff"];
@@ -736,7 +1024,7 @@
               x = -1;
               letterCount += x;
               waiting = false;
-            }, 1000);
+            }, 200);
           } else if (waiting === false) {
             target.innerHTML = words[0].substring(0, letterCount);
             letterCount += x;
@@ -752,6 +1040,10 @@
             visible = true;
           }
         }, 400);
+      }
+
+      const goToTimeLine = () => {
+          location.href='./timeline.html';
       }
     </script>
   </body>
