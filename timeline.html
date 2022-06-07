@@ -10,6 +10,8 @@
       href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" type="text/css" href="./slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="./slick/slick-theme.css" />
     <title>Document</title>
     <style>
       *,
@@ -35,7 +37,7 @@
         padding: 100px 0;
       }
 
-      .container {
+      .titleContainer {
         width: 90%;
         max-width: 1200px;
         margin: 0 auto;
@@ -243,8 +245,10 @@
   </head>
   <body>
     <section class="intro">
-      <div class="container">
-        <h1 style="font-family: 'Dancing Script', cursive; font-size: 4rem;">Timeline of our story &darr;</h1>
+      <div class="titleContainer">
+        <h1 style="font-family: 'Dancing Script', cursive; font-size: 4rem">
+          Timeline of our story &darr;
+        </h1>
       </div>
     </section>
 
@@ -367,19 +371,17 @@
         </li>
         <li>
           <div>
-            <time>2022.6.1 ~ ???</time>
+            <time>2022.6.8 ~ ???</time>
             Will you be my girlfriend?
             <br />
             <a onclick="yes()" style="text-decoration: underline">[Yes]</a> to
             accept.
             <br />
-            [No] to choose [Yes].
+            [No] to choose <a onclick="yes()" style="text-decoration: underline">[Yes]</a>.
           </div>
         </li>
       </ul>
     </section>
-
-    <div id="waiting"></div>
     <script>
       (function () {
         "use strict";
@@ -415,14 +417,8 @@
         window.addEventListener("scroll", callbackFunc);
       })();
 
-      const yes = () => {};
-
-      window.onscroll = function (ev) {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-          //   location.href = "./modal.html";
-          // document.getElementById("waiting").innerHTML = "Hello"
-          // you're at the bottom of the page
-        }
+      const yes = () => {
+        location.href='./future.html';
       };
     </script>
   </body>
